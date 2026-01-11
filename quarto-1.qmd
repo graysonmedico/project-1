@@ -1,5 +1,47 @@
 ---
 title: "Untitled"
 format: html
+execute: 
+  echo: false
 ---
 
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+library(palmerpenguins)
+```
+
+```{r}
+# Remove rows with missing data for a cleaner plot
+penguins_clean <- penguins %>% 
+  drop_na(flipper_length_mm, body_mass_g)
+
+# Create the plot
+ggplot(data = penguins_clean, 
+       aes(x = flipper_length_mm, y = body_mass_g)) +
+  # Add points with transparency and color by species
+  geom_point(aes(color = species, shape = species), 
+             size = 3, alpha = 0.8) +
+  # Add a smooth trend line for each species
+  geom_smooth(aes(color = species, fill = species), 
+              method = "lm", se = TRUE, alpha = 0.2) +
+  # Use custom "beautiful" colors
+  scale_color_manual(values = c("Adelie" = "#FF8C00", "Chinstrap" = "#9932CC", "Gentoo" = "#008B8B")) +
+  scale_fill_manual(values = c("Adelie" = "#FF8C00", "Chinstrap" = "#9932CC", "Gentoo" = "#008B8B")) +
+  # Clean up the theme and labels
+  theme_minimal(base_size = 14) +
+  labs(
+    title = "Penguin Size Across Species",
+    subtitle = "Relationship between flipper length and body mass",
+    x = "Flipper Length (mm)",
+    y = "Body Mass (g)",
+    color = "Species",
+    shape = "Species",
+    fill = "Species",
+    caption = "Source: palmerpenguins package"
+  ) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+```
